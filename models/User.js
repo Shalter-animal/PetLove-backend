@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema(
       maxlength: [50, 'Name cannot be more than 50 characters']
     },
 
-    // EMAIL
     email: {
       type: String,
       required: [true, 'Please provide an email'],
@@ -24,9 +23,7 @@ const userSchema = new mongoose.Schema(
         'Please provide a valid email'
       ]
     },
-
-    // ПАРОЛЬ
-    password: {
+      password: {
       type: String,
       required: [true, 'Please provide a password'],
       minlength: [6, 'Password must be at least 6 characters'],
