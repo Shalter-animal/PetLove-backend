@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
   {
-
     name: {
       type: String,
       required: [true, 'Please provide a name'],
@@ -23,15 +22,44 @@ const userSchema = new mongoose.Schema(
         'Please provide a valid email'
       ]
     },
-      password: {
+
+    password: {
       type: String,
       required: [true, 'Please provide a password'],
       minlength: [6, 'Password must be at least 6 characters'],
       select: false
-    }
+    },
+
+    avatar: {
+      type: String,
+      default: null
+    },
+
+    phone: {
+      type: String,
+      default: null,
+      match: [
+        /^\+?[1-9]\d{1,14}$/,
+        'Please provide a valid phone number'
+      ]
+    },
+
+    noticesFavorites: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Notice'
+    }],
+
+    noticesViewed: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Notice'
+    }],
+
+    pets: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Pet'
+    }]
   },
   {
-
     timestamps: true
   }
 );

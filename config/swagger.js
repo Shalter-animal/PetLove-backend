@@ -14,8 +14,12 @@ const options = {
     },
     tags: [
       {
+        name: 'Users',
+        description: 'User management endpoints - signup, signin, profile, signout'
+      },
+      {
         name: 'Authentication',
-        description: 'Authentication and user management endpoints'
+        description: 'Authentication endpoints (legacy)'
       }
     ],
     servers: [

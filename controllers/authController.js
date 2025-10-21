@@ -97,7 +97,8 @@ exports.login = async (req, res, next) => {
 
 exports.getMe = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id)
+      .populate('noticesFavorites');
 
     if (!user) {
       return res.status(404).json({
@@ -106,15 +107,14 @@ exports.getMe = async (req, res, next) => {
       });
     }
 
+    const token = generateToken(user._id);
+
     res.status(200).json({
-      success: true,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-      }
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: token,
+      noticesFavorites: user.noticesFavorites || []
     });
 
   } catch (error) {
@@ -122,6 +122,67 @@ exports.getMe = async (req, res, next) => {
     res.status(500).json({
       success: false,
       message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+exports.getMeFull = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id)
+      .populate('noticesFavorites')
+      .populate('noticesViewed')
+      .populate('pets');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+      phone: user.phone,
+      token: token,
+      noticesViewed: user.noticesViewed || [],
+      noticesFavorites: user.noticesFavorites || [],
+      pets: user.pets || [],
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    });
+
+  } catch (error) {
+    console.error('Get full user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+exports.logout = async (req, res, next) => {
+  try {
+    // В JWT-based аутентифікації logout відбувається на клієнті
+    // Тут можна додати логіку для blacklist токенів, якщо потрібно
+    // Наразі просто повертаємо успішну відповідь
+
+    res.status(200).json({
+      success: true,
+      message: 'Logout successful'
+    });
+
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during logout',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
