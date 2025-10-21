@@ -23,7 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 // Import routes
-const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 
 // Basic route
@@ -34,8 +33,7 @@ app.get('/', (req, res) => {
     documentation: `${req.protocol}://${req.get('host')}/api-docs`,
     endpoints: {
       health: '/api/health',
-      auth: '/api/auth',
-      users: '/api/users',
+      users: '/users',
       docs: '/api-docs'
     }
   });
@@ -56,8 +54,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 }));
 
 // API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', usersRoutes);
+app.use('/users', usersRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

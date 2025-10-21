@@ -16,10 +16,6 @@ const options = {
       {
         name: 'Users',
         description: 'User management endpoints - signup, signin, profile, signout'
-      },
-      {
-        name: 'Authentication',
-        description: 'Authentication endpoints (legacy)'
       }
     ],
     servers: [
