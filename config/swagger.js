@@ -16,6 +16,22 @@ const options = {
       {
         name: 'Users',
         description: 'User management endpoints - signup, signin, profile, signout'
+      },
+      {
+        name: 'News',
+        description: 'News management endpoints - get, create, update, delete news articles'
+      },
+      {
+        name: 'Notices',
+        description: 'Notices management endpoints - get notices, categories, species, favorites'
+      },
+      {
+        name: 'Cities',
+        description: 'Cities management endpoints - search cities, get locations with pets'
+      },
+      {
+        name: 'Friends',
+        description: 'Friends management endpoints - get Petlove friends and partners'
       }
     ],
     servers: [

@@ -24,6 +24,10 @@ connectDB();
 
 // Import routes
 const usersRoutes = require('./routes/users');
+const newsRoutes = require('./routes/news');
+const noticesRoutes = require('./routes/notices');
+const citiesRoutes = require('./routes/cities');
+const friendsRoutes = require('./routes/friends');
 
 // Basic route
 app.get('/', (req, res) => {
@@ -34,6 +38,10 @@ app.get('/', (req, res) => {
     endpoints: {
       health: '/api/health',
       users: '/users',
+      news: '/news',
+      notices: '/notices',
+      cities: '/cities',
+      friends: '/friends',
       docs: '/api-docs'
     }
   });
@@ -55,6 +63,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 
 // API Routes
 app.use('/users', usersRoutes);
+app.use('/news', newsRoutes);
+app.use('/notices', noticesRoutes);
+app.use('/cities', citiesRoutes);
+app.use('/friends', friendsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
