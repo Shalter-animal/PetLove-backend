@@ -1,7 +1,6 @@
 const Notice = require('../models/Notice');
 const User = require('../models/User');
 
-// GET /notices - Get all notices with filters and pagination
 exports.getNotices = async (req, res) => {
   try {
     const {
@@ -90,80 +89,61 @@ exports.getNotices = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Get notices error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching notices',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };
 
-// GET /notices/categories - Get all available categories
 exports.getCategories = async (req, res) => {
   try {
-    // Return categories from Notice model enum
     const categories = ['found', 'free', 'lost', 'sell'];
-    
     res.status(200).json(categories);
 
   } catch (error) {
-    console.error('Get categories error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching categories',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };
 
-// GET /notices/sex - Get all available sex options
 exports.getSex = async (req, res) => {
   try {
-    // Return sex options from Notice model enum
     const sexOptions = ['female', 'male', 'multiple', 'unknown'];
-    
     res.status(200).json(sexOptions);
 
   } catch (error) {
-    console.error('Get sex options error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching sex options',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };
 
-// GET /notices/species - Get all available species
 exports.getSpecies = async (req, res) => {
   try {
-    // Return species from Notice model enum
     const species = [
-      'dog', 'cat', 'monkey', 'bird', 'snake', 'turtle', 
-      'lizard', 'frog', 'fish', 'ants', 'bees', 'butterfly', 
+      'dog', 'cat', 'monkey', 'bird', 'snake', 'turtle',
+      'lizard', 'frog', 'fish', 'ants', 'bees', 'butterfly',
       'spider', 'scorpion'
     ];
-    
     res.status(200).json(species);
 
   } catch (error) {
-    console.error('Get species error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching species',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };
 
-// POST /notices/favorites/add/:id - Add notice to favorites
 exports.addToFavorites = async (req, res) => {
   try {
     const noticeId = req.params.id;
     const userId = req.user._id;
 
-    // Validate ObjectId
     if (!noticeId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({
         success: false,
@@ -171,7 +151,6 @@ exports.addToFavorites = async (req, res) => {
       });
     }
 
-    // Check if notice exists
     const notice = await Notice.findById(noticeId);
     if (!notice) {
       return res.status(404).json({
@@ -180,7 +159,6 @@ exports.addToFavorites = async (req, res) => {
       });
     }
 
-    // Check if already in favorites
     const user = await User.findById(userId);
     if (user.noticesFavorites.includes(noticeId)) {
       return res.status(409).json({
@@ -189,7 +167,6 @@ exports.addToFavorites = async (req, res) => {
       });
     }
 
-    // Add to favorites and increment popularity
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $addToSet: { noticesFavorites: noticeId } },
@@ -201,26 +178,21 @@ exports.addToFavorites = async (req, res) => {
       { $inc: { popularity: 1 } }
     );
 
-    // Return array of favorite notice IDs
     res.status(200).json(updatedUser.noticesFavorites);
 
   } catch (error) {
-    console.error('Add to favorites error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while adding to favorites',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };
 
-// DELETE /notices/favorites/remove/:id - Remove notice from favorites
 exports.removeFromFavorites = async (req, res) => {
   try {
     const noticeId = req.params.id;
     const userId = req.user._id;
 
-    // Validate ObjectId
     if (!noticeId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({
         success: false,
@@ -228,7 +200,6 @@ exports.removeFromFavorites = async (req, res) => {
       });
     }
 
-    // Check if notice exists
     const notice = await Notice.findById(noticeId);
     if (!notice) {
       return res.status(404).json({
@@ -237,7 +208,6 @@ exports.removeFromFavorites = async (req, res) => {
       });
     }
 
-    // Check if in favorites
     const user = await User.findById(userId);
     if (!user.noticesFavorites.includes(noticeId)) {
       return res.status(409).json({
@@ -246,7 +216,6 @@ exports.removeFromFavorites = async (req, res) => {
       });
     }
 
-    // Remove from favorites and decrement popularity
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $pull: { noticesFavorites: noticeId } },
@@ -258,25 +227,20 @@ exports.removeFromFavorites = async (req, res) => {
       { $inc: { popularity: -1 } }
     );
 
-    // Return array of favorite notice IDs
     res.status(200).json(updatedUser.noticesFavorites);
 
   } catch (error) {
-    console.error('Remove from favorites error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while removing from favorites',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };
 
-// GET /notices/:id - Get notice by ID
 exports.getNoticeById = async (req, res) => {
   try {
     const noticeId = req.params.id;
 
-    // Validate ObjectId
     if (!noticeId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({
         success: false,
@@ -299,9 +263,6 @@ exports.getNoticeById = async (req, res) => {
     res.status(200).json(notice);
 
   } catch (error) {
-    console.error('Get notice by ID error:', error);
-
-    // Handle invalid ObjectId
     if (error.kind === 'ObjectId') {
       return res.status(404).json({
         success: false,
@@ -311,8 +272,7 @@ exports.getNoticeById = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching notice',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };

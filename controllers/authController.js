@@ -170,10 +170,6 @@ exports.getMeFull = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
   try {
-    // В JWT-based аутентифікації logout відбувається на клієнті
-    // Тут можна додати логіку для blacklist токенів, якщо потрібно
-    // Наразі просто повертаємо успішну відповідь
-
     res.status(200).json({
       success: true,
       message: 'Logout successful'

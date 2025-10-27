@@ -2,7 +2,7 @@ const { body, validationResult } = require('express-validator');
 
 
 exports.registerValidation = [
-  // ПЕРЕВІРКА ІМ'Я
+
   body('name')
     .trim()
     .notEmpty()
@@ -10,7 +10,6 @@ exports.registerValidation = [
     .isLength({ min: 2, max: 50 })
     .withMessage('Name must be between 2 and 50 characters'),
 
-  // ПЕРЕВІРКА EMAIL
   body('email')
     .trim()
     .notEmpty()

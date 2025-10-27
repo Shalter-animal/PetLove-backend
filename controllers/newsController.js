@@ -1,6 +1,5 @@
 const News = require('../models/News');
 
-// GET /news - Получить все новости с пагинацией и поиском
 exports.getNews = async (req, res) => {
   try {
     const { keyword = '', page = 1, limit = 6 } = req.query;
@@ -9,7 +8,6 @@ exports.getNews = async (req, res) => {
     const limitNum = parseInt(limit);
     const skip = (pageNum - 1) * limitNum;
 
-    // Создаем фильтр для поиска
     let filter = {};
     if (keyword) {
       filter = {
@@ -20,14 +18,12 @@ exports.getNews = async (req, res) => {
       };
     }
 
-    // Получаем новости с пагинацией
     const news = await News.find(filter)
-      .sort({ date: -1 }) // Сортировка по дате (новые первыми)
+      .sort({ date: -1 })
       .skip(skip)
       .limit(limitNum)
-      .select('-createdAt -updatedAt -__v'); // Исключаем служебные поля
+      .select('-createdAt -updatedAt -__v');
 
-    // Подсчитываем общее количество
     const total = await News.countDocuments(filter);
     const totalPages = Math.ceil(total / limitNum);
 
@@ -39,11 +35,9 @@ exports.getNews = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Get news error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching news',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };

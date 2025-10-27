@@ -1,6 +1,5 @@
 const Friend = require('../models/Friend');
 
-// GET /friends/ - Get all Petlove friends
 exports.getFriends = async (req, res) => {
   try {
     const friends = await Friend.find()
@@ -17,11 +16,9 @@ exports.getFriends = async (req, res) => {
     res.status(200).json(friends);
 
   } catch (error) {
-    console.error('Get friends error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error'
     });
   }
 };
